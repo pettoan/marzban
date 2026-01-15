@@ -286,7 +286,7 @@ class UserResponse(User):
     lifetime_used_traffic: int = 0
     created_at: datetime
     links: List[str] = []
-    subscription_url: str = ""
+   /////// subscription_url: str = ""///
     proxies: dict
     excluded_inbounds: Dict[ProxyTypes, List[str]] = {}
 

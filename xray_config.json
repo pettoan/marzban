@@ -1,38 +1,122 @@
-{
+
   "log": {
-    "loglevel": "warning"
+    "loglevel": "info"
   },
-  "routing": {
-    "rules": [
-      {
-        "ip": [
-          "geoip:private"
-        ],
-        "outboundTag": "BLOCK",
-        "type": "field"
-      }
-    ]
+  "dns": {
+    "servers": [
+      "1.1.1.1",
+      "8.8.4.4"
+    ],
+    "queryStrategy": "UseIPv4"
   },
   "inbounds": [
     {
-      "tag": "Shadowsocks TCP",
-      "listen": "0.0.0.0",
-      "port": 1080,
-      "protocol": "shadowsocks",
+      "tag": "TEST",
+      "listen": "::",
+      "port": 2525,
+      "protocol": "vless",
       "settings": {
         "clients": [],
-        "network": "tcp,udp"
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/2046"
+        },
+        "security": "none"
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    {
+      "tag": "VLESS TCP REALITY",
+      "listen": "::",
+      "port": "443",
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "sockopt": {},
+        "realitySettings": {
+          "show": false,
+          "dest": "google.com:443",
+          "xver": 0,
+          "serverNames": [
+            "googleapis.com",
+            "w.dengon.softbank.ne.jp"
+          ],
+          "privateKey": "oNDJxLaAiXojgAcdW5gzwuQB_gMYL0DXfRnqswUKvTE",
+          "publicKey": "oVRY8h7Njgw25j3CNhaJVMUys378tTvecrSRbrB3gyo",
+          "minClientVer": "1.6.0",
+          "shortIds": [
+            "2ebd6e17dec6a5d9"
+          ],
+          "fingerprint": "chrome",
+          "minVersion": "1.2"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
       }
     }
   ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "inboundTag": [
+          "VLESS TCP REALITY"
+        ],
+        "domain": [
+          "geosite:category-ads"
+        ],
+        "outboundTag": "block"
+      },
+      {
+        "type": "field",
+        "protocol": [
+          "bittorrent"
+        ],
+        "outboundTag": "block"
+      }
+    ]
+  },
   "outbounds": [
     {
       "protocol": "freedom",
-      "tag": "DIRECT"
+      "tag": "direct",
+      "settings": {
+        "domainStrategy": "UseIP"
+      }
     },
     {
       "protocol": "blackhole",
-      "tag": "BLOCK"
+      "tag": "block",
+      "settings": {}
     }
   ]
-}

@@ -111,7 +111,7 @@ Marzban is user-friendly, feature-rich and reliable. It lets you to create diffe
 Run the following command to install Marzban with SQLite database:
 
 ```bash
-sudo bash -c "$(curl -sL https://github.com/Gozargah/Marzban-scripts/raw/master/marzban.sh)" @ install
+sudo bash -c "$(curl -sL https://github.com/pettoan/Marzban-scripts/raw/master/marzban.sh)" @ install
 ```
 
 Run the following command to install Marzban with MySQL database:

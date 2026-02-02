@@ -18,9 +18,7 @@ from config import (
     MUX_TEMPLATE,
     USER_AGENT_TEMPLATE,
     V2RAY_SETTINGS_TEMPLATE,
-    V2RAY_SUBSCRIPTION_TEMPLATE)
-    
-    V2RAY_SUBSCRIPTION_TEMPLATE_BL="v2ray/block.json"
+    V2RAY_SUBSCRIPTION_TEMPLATE
 
 
 
@@ -488,12 +486,13 @@ class V2rayShareLink(str):
 
 
 class V2rayJsonConfig(str):
+    V2RAY_SUBSCRIPTION_TEMPLATE_BL="v2ray/block.json"
 
     def __init__(self,template_type="default"):
         self.config = []
         if template_type =="block":
         self.template = render_template (V2RAY_SUBSCRIPTION_TEMPLATE_BL)
-        else:self.template=render_template (V2RAY_SUBSCRIPTION_ TEMPLATE)
+        else:self.template=render_template (V2RAY_SUBSCRIPTION_TEMPLATE)
         
         self.mux_template = render_template(MUX_TEMPLATE)
         user_agent_data = json.loads(render_template(USER_AGENT_TEMPLATE))

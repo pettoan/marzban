@@ -485,27 +485,28 @@ class V2rayShareLink(str):
         )
 
 
-class V2rayJsonConfig(str):
-    V2RAY_SUBSCRIPTION_TEMPLATE_BL="v2ray/block.json"
+class V2rayJsonConfig:
 
-    def __init__(self,template_type="default"):
+    def __init__(self, template_type: str = "default"):
         self.config = []
-        if template_type =="block":
-        self.template = render_template (V2RAY_SUBSCRIPTION_TEMPLATE_BL)
-        else:self.template=render_template (V2RAY_SUBSCRIPTION_TEMPLATE)
-        
-        self.mux_template = render_template(MUX_TEMPLATE)
-        user_agent_data = json.loads(render_template(USER_AGENT_TEMPLATE))
 
-        if 'list' in user_agent_data and isinstance(user_agent_data['list'], list):
-            self.user_agent_list = user_agent_data['list']
+        # chọn template theo template_type
+        if template_type == "block":
+            self.template = render_template(V2RAY_SUBSCRIPTION_TEMPLATE)
+        else:
+            self.template = render_template(V2RAY_SUBSCRIPTION_TEMPLATE)
+
+        self.mux_template = render_template(MUX_TEMPLATE)
+
+        user_agent_data = json.loads(render_template(USER_AGENT_TEMPLATE))
+        if isinstance(user_agent_data.get("list"), list):
+            self.user_agent_list = user_agent_data["list"]
         else:
             self.user_agent_list = []
 
         grpc_user_agent_data = json.loads(render_template(GRPC_USER_AGENT_TEMPLATE))
-
-        if 'list' in grpc_user_agent_data and isinstance(grpc_user_agent_data['list'], list):
-            self.grpc_user_agent_data = grpc_user_agent_data['list']
+        if isinstance(grpc_user_agent_data.get("list"), list):
+            self.grpc_user_agent_data = grpc_user_agent_data["list"]
         else:
             self.grpc_user_agent_data = []
 
@@ -515,6 +516,7 @@ class V2rayJsonConfig(str):
             self.settings = {}
 
         del user_agent_data, grpc_user_agent_data
+
 
     def add_config(self, remarks, outbounds):
         json_template = json.loads(self.template)

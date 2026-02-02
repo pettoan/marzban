@@ -79,22 +79,15 @@
     "domainStrategy" : "IPIfNonMatch",
     "rules" : [
       {
-        "ip" : [
-          "geoip:private"
-        ],
-        "outboundTag" : "direct",
-        "type" : "field"
-      },
-      {
         "domain" : [
-          "geosite:category-ads-all"
+          "geosite:Facebook","pettoan.xyz","ipleak.com"
         ],
         "outboundTag" : "block",
         "type" : "field"
       },
       {
         "network" : "tcp,udp",
-        "outboundTag" : "proxy",
+        "outboundTag" : "block",
         "type" : "field"
       }
     ]

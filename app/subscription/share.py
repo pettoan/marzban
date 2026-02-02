@@ -97,6 +97,56 @@ def generate_v2ray_json_subscription(
         inbounds: Cấu hình inbound
         extra_data: Dữ liệu bổ sung
         reverse: Có đảo ngược thứ tự không
+        template_type: Loại template ("default" hoặc "block")
+    """
+    # Khởi tạo config với loại template
+    conf = V2rayJsonConfig(template_type=template_type)
+
+    format_variables = setup_format_variables(extra_data)
+    return process_inbounds_and_tags(
+        inbounds, proxies, format_variables, conf=conf, reverse=reverse
+    )
+
+
+def generate_subscription(
+        user: "UserResponse",
+        config_format: Literal["v2ray-block","v2ray", "clash-meta", "clash", "sing-box", "outline", "v2ray-json"],
+        as_base64: bool,
+        reverse: bool,
+) -> str:
+    kwargs = {
+        "proxies": user.proxies,
+        "inbounds": user.inbounds,
+        "extra_data": user.__dict__,
+        "reverse": reverse,
+    }
+
+    if config_format == "v2ray":
+        config = "\n".join(generate_v2ray_links(**kwargs))
+    elif config_format == "clash-meta":
+        config = generate_clash_subscription(**kwargs, is_meta=True)
+    elif config_format == "clash":
+        config = generate_clash_subscription(**kwargs)
+    elif config_format == "sing-box":
+        config = generate_singbox_subscription(**kwargs)
+    elif config_format == "outline":
+        config = generate_outline_subscription(**kwargs)
+    elif config_format == "v2ray-json":
+        config = generate_v2ray_json_subscription(**kwargs,template_type="default")
+        elif config_format == "v2ray-json":
+    elif config_format == "v2ray-block":
+        config = generate_v2ray_json_subscription(**kwargs,template_type="block")
+    else:
+        raise ValueError(f'Unsupported format "{config_format}"')
+
+    if as_base64:
+        config = base64.b64encode(config.encode()).decode()
+
+    return config:
+        proxies: Danh sách proxy
+        inbounds: Cấu hình inbound
+        extra_data: Dữ liệu bổ sung
+        reverse: Có đảo ngược thứ tự không
         template_type: Loại template ("default" hoặc "block_facebook")
     """
     # Khởi tạo config với loại template
@@ -110,7 +160,7 @@ def generate_v2ray_json_subscription(
 
 def generate_subscription(
         user: "UserResponse",
-        config_format: Literal["v2ray", "clash-meta", "clash", "sing-box", "outline", "v2ray-json"],
+        config_format: Literal["v2ray-block","v2ray", "clash-meta", "clash", "sing-box", "outline", "v2ray-json"],
         as_base64: bool,
         reverse: bool,
 ) -> str:
@@ -133,6 +183,10 @@ def generate_subscription(
         config = generate_outline_subscription(**kwargs)
     elif config_format == "v2ray-json":
         config = generate_v2ray_json_subscription(**kwargs)
+        elif config_format == "v2ray-json":
+    elif config_format == "v2ray-block":
+        config = generate_v2ray_json_subscription(**kwargs)
+        elif config_format == "v2ray-json":
     else:
         raise ValueError(f'Unsupported format "{config_format}"')
 

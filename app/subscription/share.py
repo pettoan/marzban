@@ -88,8 +88,19 @@ def generate_outline_subscription(
 
 def generate_v2ray_json_subscription(
         proxies: dict, inbounds: dict, extra_data: dict, reverse: bool,
+        template_type: str = "default"
 ) -> str:
-    conf = V2rayJsonConfig()
+    """Tạo subscription V2Ray JSON
+    
+    Args:
+        proxies: Danh sách proxy
+        inbounds: Cấu hình inbound
+        extra_data: Dữ liệu bổ sung
+        reverse: Có đảo ngược thứ tự không
+        template_type: Loại template ("default" hoặc "block_facebook")
+    """
+    # Khởi tạo config với loại template
+    conf = V2rayJsonConfig(template_type=template_type)
 
     format_variables = setup_format_variables(extra_data)
     return process_inbounds_and_tags(

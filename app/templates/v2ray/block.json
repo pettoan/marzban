@@ -1,0 +1,102 @@
+{
+  "dns" : {
+    "disableCache" : false,
+    "disableFallback" : false,
+    "disableFallbackIfMatch" : true,
+    "hosts" : {
+      "dns.google" : [
+        "8.8.8.8",
+        "8.8.4.4"
+      ],
+      "localhost" : "127.0.0.1",
+      "one.one.one.one" : [
+        "1.1.1.1",
+        "1.0.0.1"
+      ]
+    },
+    "queryStrategy" : "UseIP",
+    "servers" : [
+      "1.1.1.1",
+      "8.8.8.8",
+      {
+        "address" : "https:\/\/1.1.1.1\/dns-query",
+        "domains" : [
+          "geosite:apple",
+          "geosite:google",
+          "geosite:facebook",
+          "geosite:tiktok"
+        ]
+      }
+    ]
+  },
+  "inbounds" : [
+    {
+      "listen" : "127.0.0.1",
+      "port" : 10808,
+      "protocol" : "socks",
+      "settings" : {
+        "allowTransparent" : false,
+        "auth" : "noauth",
+        "udp" : true
+      },
+      "sniffing" : {
+        "destOverride" : [
+          "http",
+          "tls"
+        ],
+        "enabled" : true,
+        "routeOnly" : false
+      },
+      "tag" : "socks"
+    },
+    {
+      "listen" : "127.0.0.1",
+      "port" : 10809,
+      "protocol" : "http",
+      "settings" : {
+        "allowTransparent" : false,
+        "auth" : "noauth",
+        "udp" : true
+      },
+      "sniffing" : {
+        "destOverride" : [
+          "http",
+          "tls"
+        ],
+        "enabled" : true,
+        "routeOnly" : false
+      },
+      "tag" : "http"
+    }
+  ],
+  "log" : {
+    "access" : "\/private\/var\/mobile\/Containers\/Shared\/AppGroup\/076B8089-CA8D-451E-A6EB-5B9D2D63345C\/Library\/Application Support\/Xray\/logs\/access",
+    "dnsLog" : true,
+    "loglevel" : "Warning"
+  },
+  "outbounds" : [],
+  "routing" : {
+    "domainStrategy" : "IPIfNonMatch",
+    "rules" : [
+      {
+        "ip" : [
+          "geoip:private"
+        ],
+        "outboundTag" : "direct",
+        "type" : "field"
+      },
+      {
+        "domain" : [
+          "geosite:category-ads-all"
+        ],
+        "outboundTag" : "block",
+        "type" : "field"
+      },
+      {
+        "network" : "tcp,udp",
+        "outboundTag" : "proxy",
+        "type" : "field"
+      }
+    ]
+  }
+}

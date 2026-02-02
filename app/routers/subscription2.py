@@ -1,6 +1,6 @@
 import re
 from distutils.version import LooseVersion
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, Header, Path, Request, Response
 from fastapi.responses import HTMLResponse
@@ -29,10 +29,8 @@ client_config = {
     "clash": {"config_format": "clash", "media_type": "text/yaml", "as_base64": False, "reverse": False},
     "v2ray": {"config_format": "v2ray", "media_type": "text/plain", "as_base64": True, "reverse": False},
     "outline": {"config_format": "outline", "media_type": "application/json", "as_base64": False, "reverse": False},
-    "v2ray-json": {"config_format": "v2ray-json", "media_type": "application/json", "as_base64": False,
-                   "reverse": False},
-    "block": {"config_format": "block", "media_type": "application/json", "as_base64": False,
-                         "reverse": False}  # Thêm config mới cho block
+    "v2ray-json": {"config_format": "v2ray-json", "media_type": "application/json", "as_base64": False, "reverse": False},
+    "block": {"config_format": "block", "media_type": "application/json", "as_base64": False, "reverse": False}  # Thêm config mới cho block
 }
 
 router = APIRouter(tags=['Subscription'], prefix=f'/{XRAY_SUBSCRIPTION_PATH}')
@@ -188,7 +186,7 @@ def user_get_usage(
 def user_subscription_with_client_type(
     request: Request,
     dbuser: UserResponse = Depends(get_validated_sub),
-    client_type: str = Path(..., regex="sing-box|clash-meta|clash|outline|v2ray|v2ray-json|v2ray-json-block"),
+    client_type: str = Path(..., regex="sing-box|clash-meta|clash|outline|v2ray|v2ray-json|block"),
     db: Session = Depends(get_db),
     user_agent: str = Header(default="")
 ):
@@ -210,7 +208,7 @@ def user_subscription_with_client_type(
     # Kiểm tra xem có nên dùng template block không
     use_block_template = should_use_block_template(user)
     
-    # Nếu client_type là v2ray-json và nên dùng block, thì đổi thành v2ray-json-block
+    # Nếu client_type là v2ray-json và nên dùng block, thì đổi thành block
     if client_type == "v2ray-json" and use_block_template:
         client_type = "block"
     

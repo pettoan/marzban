@@ -488,9 +488,12 @@ class V2rayShareLink(str):
 
 class V2rayJsonConfig(str):
 
-    def __init__(self):
+    def __init__(self,template_type="default"):
         self.config = []
-        self.template = render_template(V2RAY_SUBSCRIPTION_TEMPLATE)
+        if template_ type =="block":
+        self.template = render_template (V2RAY_SUBSCRIPTION_TEMPLATE_BL)
+        else:self.template=render template (V2RAY_SUBSCRIPTION_ TEMPLATE)
+        
         self.mux_template = render_template(MUX_TEMPLATE)
         user_agent_data = json.loads(render_template(USER_AGENT_TEMPLATE))
 

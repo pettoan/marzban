@@ -1,0 +1,150 @@
+{
+  "dns" : {
+    "disableCache" : false,
+    "queryStrategy" : "UseIPv4",
+    "servers" : [
+      {
+        "address" : "1.1.1.1"
+      },
+      {
+        "address" : "8.8.8.8"
+      }
+    ]
+  },
+  "inbounds" : [
+    {
+      "listen" : "127.0.0.1",
+      "port" : 10808,
+      "protocol" : "socks",
+      "settings" : {
+        "auth" : "noauth",
+        "udp" : true
+      },
+      "sniffing" : {
+        "destOverride" : [
+          "http",
+          "tls",
+          "quic"
+        ],
+        "enabled" : true,
+        "routeOnly" : true
+      },
+      "tag" : "socks"
+    },
+    {
+      "listen" : "127.0.0.1",
+      "port" : 10809,
+      "protocol" : "http",
+      "settings" : {
+        "auth" : "noauth",
+        "udp" : true
+      },
+      "sniffing" : {
+        "destOverride" : [
+          "tls",
+          "quic",
+          "http"
+        ],
+        "enabled" : true,
+        "excludedDomains" : [
+
+        ],
+        "metadataOnly" : false,
+        "routeOnly" : true
+      },
+      "tag" : "http"
+    }
+  ],
+  
+  "observatory" : {
+    "enableConcurrency" : true,
+    "probeInterval" : "30s",
+    "probeURL" : "https:\/\/connectivitycheck.gstatic.com\/generate_204",
+    "subjectSelector" : [
+      "proxy1"
+    ]
+  },
+  "outbounds" : [
+    {
+      "protocol" : "trojan",
+      "settings" : {
+        "servers" : [
+          {
+            "address" : "133.117.73.45",
+            "email" : "https:\/\/gozargah.github.io\/marzban\/",
+            "password" : "_5BLdQIMB_gis-kbFR3SMQ",
+            "port" : 8443
+          }
+        ]
+      },
+      "streamSettings" : {
+        "network" : "ws",
+        "wsSettings" : {
+          "headers" : {
+            "User-Agent" : "Mozilla\/5.0 (iPhone; CPU iPhone OS 17_1_1 like Mac OS X) AppleWebKit\/605.1.15 (KHTML, like Gecko) Version\/17.1.1 Mobile\/15E148 Safari\/604.1"
+          },
+          "host" : "ybb.softbank.jp",
+          "path" : "\/"
+        }
+      },
+      "tag" : "proxy1"
+    },
+    {
+      "protocol" : "freedom",
+      "tag" : "direct"
+    },
+    {
+      "protocol" : "blackhole",
+      "tag" : "block"
+    }
+  ],
+  "remarks" : "🇯🇵 ybb.softbank.jp 1",
+  "routing" : {
+    "balancers" : [
+      {
+        "fallbackTag" : "proxy",
+        "selector" : [
+          "proxy1"
+        ],
+        "strategy" : {
+          "type" : "leastPing"
+        },
+        "tag" : "auto"
+      }
+    ],
+    "domainStrategy" : "IPOnDemand",
+    "rules" : [
+      {
+        "ip" : [
+          "geoip:private"
+        ],
+        "outboundTag" : "direct",
+        "type" : "field"
+      },
+      {
+        "domain" : [
+          "geosite:category-ads-all"
+        ],
+        "outboundTag" : "block",
+        "type" : "field"
+      },
+      {
+        "outboundTag" : "proxy",
+        "protocol" : [
+          "dns"
+        ],
+        "type" : "field"
+      },
+      {
+        "outboundTag" : "direct",
+        "port" : 22,
+        "type" : "field"
+      },
+      {
+        "balancerTag" : "auto",
+        "network" : "tcp,udp",
+        "type" : "field"
+      }
+    ]
+  }
+}
